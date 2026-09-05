@@ -11,9 +11,10 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    host = "0.0.0.0"
     print("=========================================================")
     print("⚡ NEXUS TERMINAL // QUANTITATIVE WATCHLIST & TEMPORAL INTELLIGENCE")
-    print("🚀 Launching server at: http://127.0.0.1:8000")
-    print("💡 Open your web browser and navigate to the address above.")
+    print(f"🚀 Launching server on {host}:{port}")
     print("=========================================================")
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=False, log_level="info")
+    uvicorn.run("app.main:app", host=host, port=port, reload=False, log_level="info")
