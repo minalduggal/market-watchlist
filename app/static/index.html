@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS — Quantitative Market Watchlist & Temporal Intelligence</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Marquee Ticker Tape -->
+  <div class="ticker-tape-wrap">
+    <div class="ticker-tape-content" id="tickerTapeContent">
+      <span class="tape-item"><span class="tape-sym">SPY</span> $558.60 <span class="tape-delta-pos">+0.42%</span></span>
+      <span class="tape-item"><span class="tape-sym">QQQ</span> $482.30 <span class="tape-delta-pos">+0.68%</span></span>
+      <span class="tape-item"><span class="tape-sym">NVDA</span> $128.50 <span class="tape-delta-pos">+3.85%</span></span>
+      <span class="tape-item"><span class="tape-sym">AAPL</span> $224.20 <span class="tape-delta-pos">+0.54%</span></span>
+      <span class="tape-item"><span class="tape-sym">MSFT</span> $448.90 <span class="tape-delta-neg">-0.22%</span></span>
+      <span class="tape-item"><span class="tape-sym">TSLA</span> $218.80 <span class="tape-delta-neg">-1.84%</span></span>
+      <span class="tape-item"><span class="tape-sym">BTC-USD</span> $63,450 <span class="tape-delta-pos">+2.15%</span></span>
+      <span class="tape-item"><span class="tape-sym">ETH-USD</span> $2,480 <span class="tape-delta-pos">+1.90%</span></span>
+      <span class="tape-item"><span class="tape-sym">XLE</span> $89.40 <span class="tape-delta-neg">-0.45%</span></span>
+      <span class="tape-item"><span class="tape-sym">SO</span> $88.20 <span class="tape-delta-pos">+0.12%</span></span>
+    </div>
+  </div>
+
+  <!-- Primary Application Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo">
+        <span>⚡ NEXUS</span>
+        <span class="brand-badge">TEMPORAL INTELLIGENCE</span>
+      </div>
+      <div class="feed-meter" id="feedMeter" title="Live exchange feed health and tick latency">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="feedStatusText">Real-Time (14ms)</span>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <!-- Perspective Mode: Quant Mode vs Plain English -->
+      <div class="perspective-toggle" title="Switch between Institutional Quant and Plain-English modes">
+        <button class="perspective-btn active" id="btnModeQuant" data-mode="quant">
+          📊 Quant Mode
+        </button>
+        <button class="perspective-btn" id="btnModePlain" data-mode="plain">
+          💬 Plain English
+        </button>
+      </div>
+
+      <!-- Market Sonification Audio Controls -->
+      <div class="audio-controls" title="Acoustic market sweep & voice briefing">
+        <button class="audio-btn" id="btnAudioSweep" title="Play 3-second acoustic market sweep (Space)">
+          🎵 Sweep <span style="font-size: 0.65rem; opacity: 0.7;">[Space]</span>
+        </button>
+        <button class="audio-btn" id="btnAudioBriefing" title="Listen to spoken voice briefing (B)">
+          🎙️ Briefing <span style="font-size: 0.65rem; opacity: 0.7;">[B]</span>
+        </button>
+        <button class="audio-btn" id="btnAudioMute" title="Toggle audio mute (M)">
+          🔊
+        </button>
+      </div>
+
+      <!-- Baseline Comparison Selector -->
+      <div class="baseline-selector-wrap" title="Select comparison anchor for deltas">
+        <button class="baseline-btn active" data-baseline="last_visit" id="btnBaseLastVisit">🕒 Last Visit</button>
+        <button class="baseline-btn" data-baseline="open" id="btnBaseOpen">⚡ Open</button>
+        <button class="baseline-btn" data-baseline="15m" id="btnBase15m">⏱️ 15m</button>
+        <button class="baseline-btn" data-baseline="1h" id="btnBase1h">⏱️ 1h</button>
+        <button class="baseline-btn" data-baseline="prev_close" id="btnBasePrevClose">📅 24h</button>
+      </div>
+
+      <!-- Checkpoint Baseline Button -->
+      <button class="btn btn-secondary" id="btnCheckpoint" title="Re-anchor your baseline checkpoint to this exact moment [C]">
+        📸 Checkpoint <span style="font-size: 0.65rem; opacity: 0.7;">[C]</span>
+      </button>
+
+      <!-- Scenario Simulator Modal Trigger -->
+      <button class="btn btn-warning" id="btnOpenLab" title="Open scenario simulator and stress tester [S]">
+        🧪 Scenarios <span style="font-size: 0.65rem; opacity: 0.7;">[S]</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Application Body -->
+  <main class="main-layout">
+
+    <!-- Executive Delta Briefing Hero Card -->
+    <section class="briefing-hero" id="briefingHero">
+      <div class="briefing-topbar">
+        <div class="briefing-title-wrap">
+          <span class="briefing-badge" id="briefingBadge">EXECUTIVE BRIEFING</span>
+          <span class="briefing-mood-badge" id="briefingMood">Market Mood: Analyzing...</span>
+          <span class="briefing-time" id="briefingTime">Baseline: Checking...</span>
+        </div>
+        <div style="font-size: 0.8rem; color: var(--accent-cyan); font-family: var(--font-mono);" id="briefingStats">
+          Tracking: 0 assets | Anomalies: 0
+        </div>
+      </div>
+      <h2 class="briefing-headline" id="briefingHeadline">Evaluating regime changes since your last session...</h2>
+      <ul class="briefing-takeaways" id="briefingTakeaways">
+        <li>Synthesizing multi-factor price and volume anomalies...</li>
+      </ul>
+    </section>
+
+    <!-- Market Breadth & Sector Momentum Bar -->
+    <div class="breadth-bar-row">
+      <div class="breadth-stats">
+        <span style="color: var(--text-muted); font-weight: 700;">PORTFOLIO BREADTH:</span>
+        <span class="breadth-pill up" id="breadthUp">🟢 Advancing: 0</span>
+        <span class="breadth-pill down" id="breadthDown">🔴 Declining: 0</span>
+        <span style="color: var(--text-muted);" id="breadthRatio">Ratio: 1.0</span>
+      </div>
+      <div class="sector-chips" id="sectorChips">
+        <div class="sector-chip">Tech: <span>+0.8%</span></div>
+        <div class="sector-chip">Semis: <span>+3.2%</span></div>
+        <div class="sector-chip">Energy: <span>-0.4%</span></div>
+        <div class="sector-chip">Crypto: <span>+2.1%</span></div>
+        <div class="sector-chip">Defensive: <span>+0.2%</span></div>
+      </div>
+    </div>
+
+    <!-- Watchlists Tabs Row -->
+    <div class="watchlist-nav-row">
+      <div class="watchlist-tabs" id="watchlistTabs">
+        <!-- Dynamically rendered tabs -->
+      </div>
+      <button class="btn btn-secondary" id="btnNewWatchlist" style="font-size: 0.76rem;">
+        + New Watchlist
+      </button>
+    </div>
+
+    <!-- Action Controls & Filter Row -->
+    <div class="table-controls-row">
+      <!-- Search Universe with Autocomplete -->
+      <div class="search-universe-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="searchUniverseInput" placeholder="Add symbol (e.g. NVDA, AAPL, BTC-USD)..." autocomplete="off">
+        <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+      </div>
+
+      <!-- Quick Triage Filter Pills -->
+      <div class="filter-pills-wrap">
+        <button class="filter-pill active" data-filter="all">All (<span id="countAll">0</span>)</button>
+        <button class="filter-pill" data-filter="urgent">⚡ Attention Needed (<span id="countUrgent">0</span>)</button>
+        <button class="filter-pill" data-filter="anomalies">🚨 Anomalies Only (<span id="countAnomalies">0</span>)</button>
+        <button class="filter-pill" data-filter="gainers">📈 Gainers</button>
+        <button class="filter-pill" data-filter="losers">📉 Losers</button>
+      </div>
+
+      <!-- Sort Selection -->
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 0.74rem; color: var(--text-muted); font-weight: 600;">SORT:</span>
+        <select id="sortSelect" style="background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-subtle); padding: 0.32rem 0.6rem; border-radius: 6px; font-size: 0.76rem; outline: none;">
+          <option value="attention">⚡ Attention Score (Urgency)</option>
+          <option value="delta_since">🕒 % Since Baseline</option>
+          <option value="day_change">📊 % Day Change</option>
+          <option value="rvol">🔥 Relative Volume (RVOL)</option>
+          <option value="z_score">📈 Volatility Z-Score</option>
+          <option value="symbol">🔤 Symbol (A-Z)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Watchlist Table Container (Supports Quant and Plain English modes) -->
+    <div class="table-container">
+      <table class="watchlist-table">
+        <thead id="watchlistTableHead">
+          <!-- Dynamically configured headers -->
+        </thead>
+        <tbody id="watchlistTableBody">
+          <tr>
+            <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+              Connecting to real-time market stream...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Keyboard Shortcuts Legend Bar -->
+    <footer class="shortcut-hint-bar">
+      <span><span class="kbd">Space</span> Acoustic Market Sweep</span>
+      <span><span class="kbd">B</span> Spoken Voice Briefing</span>
+      <span><span class="kbd">M</span> Mute Audio</span>
+      <span><span class="kbd">C</span> Checkpoint Baseline</span>
+      <span><span class="kbd">S</span> Scenario Lab</span>
+      <span style="opacity: 0.6;">• Engineered for Quantitative Temporal Market Intelligence</span>
+    </footer>
+
+  </main>
+
+  <!-- Deep Dive Side Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay">
+    <div class="drawer-panel" id="drawerPanel">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="drawerTitle">Symbol Details</h3>
+          <p style="font-size: 0.76rem; color: var(--text-muted);" id="drawerSubtitle">Intelligence & Factor Decomposition</p>
+        </div>
+        <button class="close-btn" id="btnCloseDrawer">&times;</button>
+      </div>
+
+      <div id="drawerBody">
+        <!-- Dynamically rendered factor cards -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario Simulator & Stress Tester Modal -->
+  <div class="modal-overlay" id="labModal">
+    <div class="modal-content" style="max-width: 620px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">🧪 Market Scenario Simulator & Stress Tester</h3>
+          <p style="font-size: 0.76rem; color: var(--text-secondary);">Simulate institutional shocks, halts, time jumps, and stale feed resilience</p>
+        </div>
+        <button class="close-btn" id="btnCloseLab">&times;</button>
+      </div>
+
+      <div class="lab-grid">
+        <!-- Scenario 1: Fast-Forward 45 Mins -->
+        <div class="lab-card">
+          <h4>⏩ Fast-Forward 45 Mins</h4>
+          <p>Rewinds your baseline checkpoint 45 minutes into the past to test temporal delta calculations and briefing synthesis.</p>
+          <button class="btn btn-primary" id="btnSimTimeJump">Simulate 45m Away</button>
+        </div>
+
+        <!-- Scenario 2: Earnings Breakout Shock -->
+        <div class="lab-card">
+          <h4>⚡ NVDA Earnings Breakout (+11.8%)</h4>
+          <p>Injects +11.8% breakout, 4.5x RVOL volume explosion, triggering volatility anomaly Z-score > 3.0σ.</p>
+          <button class="btn btn-warning" id="btnSimEarnings">Inject Earnings Surge</button>
+        </div>
+
+        <!-- Scenario 3: Flash Crash Shock -->
+        <div class="lab-card">
+          <h4>🚨 TSLA Flash Crash (-7.8%)</h4>
+          <p>Injects abrupt -7.8% drop with 3.5x RVOL, testing statistical anomaly flags and SPY benchmark decoupling.</p>
+          <button class="btn btn-secondary" style="color: var(--loss-red); border-color: rgba(244,63,94,0.4);" id="btnSimCrash">
+            Trigger Flash Crash
+          </button>
+        </div>
+
+        <!-- Scenario 4: Regulatory Exchange Halt -->
+        <div class="lab-card">
+          <h4>⏸️ Regulatory Exchange Halt</h4>
+          <p>Toggles trading halt on selected asset, overriding attention score with critical HALTED status.</p>
+          <button class="btn btn-secondary" style="color: #c084fc; border-color: rgba(168,85,247,0.4);" id="btnSimHalt">
+            Toggle Trading Halt
+          </button>
+        </div>
+
+        <!-- Scenario 5: Stale Feed Degraded Mode -->
+        <div class="lab-card" style="grid-column: span 2;">
+          <h4>⚠️ Degraded Feed & Network Staleness Simulator</h4>
+          <p>Simulates upstream exchange feed freeze or network disconnect to verify STALE FEED warnings and reconnection recovery.</p>
+          <button class="btn btn-secondary" id="btnSimStale" style="width: 100%; justify-content: center;">
+            Toggle Stale / Delayed Feed
+          </button>
+        </div>
+      </div>
+
+      <div style="background: var(--bg-card); padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-subtle); font-size: 0.78rem; color: var(--text-secondary);">
+        <strong>💡 Pro Tip:</strong> After triggering any scenario, close this modal to experience the dynamic re-ranking, audio sweep chords, and real-time briefing updates.
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Watchlist Modal -->
+  <div class="modal-overlay" id="createWlModal">
+    <div class="modal-content" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Create New Watchlist</h3>
+        <button class="close-btn" id="btnCloseCreateWl">&times;</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.9rem;">
+        <div>
+          <label style="font-size: 0.78rem; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;">Watchlist Name</label>
+          <input type="text" class="search-input" id="newWlNameInput" placeholder="e.g., High Momentum Semiconductors" style="padding-left: 0.85rem;">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+          <button class="btn btn-secondary" id="btnCancelCreateWl">Cancel</button>
+          <button class="btn btn-primary" id="btnConfirmCreateWl">Create Watchlist</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Application Script -->
+  <script src="/static/app.js"></script>
+</body>
+</html>

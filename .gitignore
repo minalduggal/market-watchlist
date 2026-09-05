@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+app/watchlist.db
+app/watchlist.db-wal
+app/watchlist.db-shm
+.env
+.DS_Store
